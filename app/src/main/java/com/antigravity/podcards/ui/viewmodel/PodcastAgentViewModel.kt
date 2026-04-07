@@ -28,7 +28,6 @@ class PodcastAgentViewModel(application: Application) : AndroidViewModel(applica
     private var currentDeckId: Long = 0L
     private var dueNotes = mutableListOf<AnkiNote>()
     private var currentIndex = 0
-    private var currentIndex = 0
 
     private var sessionSize: Int = 20
 
@@ -40,13 +39,23 @@ class PodcastAgentViewModel(application: Application) : AndroidViewModel(applica
         viewModelScope.launch(Dispatchers.IO) {
             _uiState.value = StudyUiState.Loading
             try {
+                // Pre-check for required model files in assets
+                val assetsList = context.assets.list("models") ?: emptyArray()
+                val requiredModels = listOf("ggml-tiny.en.bin", "en_US-lessac-low.onnx")
+                val missing = requiredModels.filter { it !in assetsList }
+
+                if (missing.isNotEmpty()) {
+                    val errorMsg = "Missing models in assets/models/: ${missing.joinToString(", ")}"
+                    android.util.Log.e("PodcastAgentViewModel", errorMsg)
+                    _uiState.value = StudyUiState.Error(errorMsg)
+                    return@launch
+                }
+
                 android.util.Log.d("PodcastAgentViewModel", "Initializing Whisper engine...")
                 val wError = whisperEngine.initialize("ggml-tiny.en.bin")
                 
                 android.util.Log.d("PodcastAgentViewModel", "Initializing Piper engine...")
                 val pError = piperEngine.initialize("en_US-lessac-low.onnx")
-                
-                android.util.Log.d("PodcastAgentViewModel", "Initialization complete.")
                 
                 if (wError == null && pError == null) {
                     android.util.Log.d("PodcastAgentViewModel", "Both engines initialized successfully")
@@ -74,7 +83,10 @@ class PodcastAgentViewModel(application: Application) : AndroidViewModel(applica
     }
 
     fun startSession(deckId: Long) {
-        if (_uiState.value is StudyUiState.Error) return
+        if (_uiState.value is StudyUiState.Error) {
+            android.util.Log.e("PodcastAgentViewModel", "Cannot start session: Engines in error state")
+            return
+        }
         
         currentDeckId = deckId
         dueNotes.clear()
