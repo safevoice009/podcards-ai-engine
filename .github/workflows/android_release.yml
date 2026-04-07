@@ -10,6 +10,8 @@ jobs:
   build:
     name: Build & Release APK
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout Repository
@@ -29,6 +31,12 @@ jobs:
 
       - name: Build Debug APK
         run: ./gradlew assembleDebug
+
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-debug
+          path: app/build/outputs/apk/debug/app-debug.apk
 
       - name: Sign APK (Optional - using debug as fallback)
         id: sign_app
