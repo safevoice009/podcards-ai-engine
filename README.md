@@ -5,7 +5,7 @@
   Keywords: Anki, AnkiDroid, Voice Assistant, AI Study Agent, Hands-free Anki, Active Recall AI, Whisper STT, Piper TTS, Neuroplasticity
 -->
 
-# <p align="center"><img src="app/src/main/res/drawable/ic_launcher_foreground.png" width="180"><br>AnkiVoice: The Elite AI Voice Agent for Anki</p>
+ <p align="center"><img src="docs/assets/ankivoice_neural.png" width="180"><br>AnkiVoice: The Elite AI Voice Agent for Anki</p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Platform-Android-00C853?style=for-the-badge&logo=android&logoColor=white" alt="Platform">
