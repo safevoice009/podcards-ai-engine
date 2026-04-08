@@ -16,6 +16,5 @@ captures/
 *.bak
 *.tmp
 
-# Piper/Whisper models (Too large for git usually, recommend downloading separately)
-*.bin
-*.onnx
+# Models are bundled for offline use in this release
+
